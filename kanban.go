@@ -13,7 +13,7 @@ import (
 type KanbanManager struct {
 	Kanbans []*Kanban
 
-	mode                  string
+	currentStatus         string
 	currentImpotingKanban *Kanban
 }
 
@@ -43,7 +43,7 @@ func (k *KanbanManager) importTodomdFile(filename string) ([]*Kanban, error) {
 
 	scanner := bufio.NewScanner(file)
 
-	k.mode = "start"
+	k.currentStatus = "To Do"
 	for scanner.Scan() {
 		k.runLine(scanner.Text())
 	}
@@ -63,22 +63,20 @@ func (k *KanbanManager) runLine(line string) {
 		return
 	}
 
-	if strings.Index(line, "### TODO") == 0 {
-		k.mode = "todo"
+	if strings.Index(line, "### To Do") == 0 {
+		k.currentStatus = "To Do"
 		return
 	}
-
 	if strings.Index(line, "### In Progress") == 0 {
-		k.mode = "in_progress"
+		k.currentStatus = "In Progress"
 		return
 	}
-
 	if strings.Index(line, "### Done") == 0 {
-		k.mode = "done"
+		k.currentStatus = "Done"
 		return
 	}
 
-	if k.mode == "" {
+	if k.currentStatus == "" {
 		return
 	}
 
@@ -121,7 +119,7 @@ func (k *KanbanManager) runLine(line string) {
 		Check:     check,
 		Tags:      tags,
 		Assignee:  assignee,
-		Status:    k.mode,
+		Status:    k.currentStatus,
 		IssueType: issueType,
 		Priority:  priority,
 	})
