@@ -39,7 +39,7 @@ go build -o todo_md_to_jira_csv
 2. Run the following command to convert the Todo.md file into a Jira-compatible CSV file:
 
 ```
-./todo_md_to_jira_csv --input todo.md --output jira_import.csv
+./todomd TODO.md jira_import.csv
 ```
 
 Replace `todo.md` with the path to your Todo.md file and `jira_import.csv` with the desired output file name.

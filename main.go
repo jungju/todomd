@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 )
 
 func main() {
 	kanbanManager := &KanbanManager{}
-	_, err := kanbanManager.importTodomdFile("TODO.md")
+	inputFilename := os.Args[1]
+	outputCsvFilename := os.Args[2]
+	_, err := kanbanManager.importTodomdFile(inputFilename)
 	if err != nil {
 		log.Fatalf("Error opening file: %v", err)
 	}
@@ -25,6 +28,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
-	ioutil.WriteFile("jira_import.csv", []byte(csvDate), 0644)
+	ioutil.WriteFile(outputCsvFilename, []byte(csvDate), 0644)
 	fmt.Println(string(csvDate))
 }
