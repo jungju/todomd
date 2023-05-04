@@ -13,7 +13,8 @@ GIT_MAIN_BRANCH="main"
 GIT_TAG_MESSAGE=""
 
 git_remote_url=$(git remote get-url origin)
-repo_info=$(echo "$git_remote_url" | sed -nE 's#https://github.com/([^/]*)/([^/]*)\.git#\1/\2#p')
+#repo_info=$(echo "$git_remote_url" | sed -nE 's#https://github.com/([^/]*)/([^/]*)\.git#\1/\2#p')
+repo_info=$(echo "$git_remote_url" | sed -nE 's#git@github.com:([^/]*)/([^/]*)\.git#\1/\2#p')
 repo_owner=$(echo "$repo_info" | cut -d '/' -f 1)
 repo_name=$(echo "$repo_info" | cut -d '/' -f 2)
 
