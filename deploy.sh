@@ -50,11 +50,9 @@ new_third_number=$((third_number + 1))
 new_version=$(echo "$last_tag" | sed "s/\(.*\)\.\([0-9]*\)/\1.$new_third_number/")
 
 ###### Git 태그 추가
-
 git tag -a "$new_version" -m "$GIT_TAG_MESSAGE"
 git push origin "$new_version"
 
-# JSON 데이터를 생성하세요.
 json_data=$(printf '{
   "tag_name": "%s",
   "name": "%s",
@@ -62,23 +60,18 @@ json_data=$(printf '{
   "draft": false,
   "prerelease": false
 }' "$new_version" "$new_version" "$GIT_TAG_MESSAGE")
-
-# GitHub API를 사용하여 릴리스를 생성하세요.
 curl -XPOST -H "Authorization: token $GITHUB_TOKEN" \
   -H "Content-Type: application/json" \
   -d "$json_data" \
   "https://api.github.com/repos/$repo_owner/$repo_name/releases"
 
 ###### Git, GitHub에 태그 완료. 빌드 진행합니다.
-
 #docker build -t $DOCKER_IMAEG:$new_tag .
 #docker push $DOCKER_IMAEG:$new_tag
 
-if [ -z "$KUBE_NAMESPACE" ]; then
-    echo "완료"
-    exit 0
-fi
-
 ###### 빌드 완료! 배포 진행합니다.
-kubectl set image deployment/$KUBE_DEPLOYMENT_NAME $KUBE_CONTAINER_NAME=$DOCKER_IMAEG:$new_tag --kubeconfig $KUBE_CONFIG_FILENAME
+#kubectl set image deployment/$KUBE_DEPLOYMENT_NAME $KUBE_CONTAINER_NAME=$DOCKER_IMAEG:$new_tag --kubeconfig $KUBE_CONFIG_FILENAME
 #kubectl set env deployment/$KUBE_DEPLOYMENT_NAME -c $KUBE_CONTAINER_NAME APP_VERSION=$new_tag --kubeconfig $KUBE_CONFIG_FILENAME
+
+echo "완료"
+exit 0
